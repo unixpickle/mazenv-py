@@ -17,7 +17,7 @@ def parse_2d_maze(maze_str):
     start_pos = None
     end_pos = None
     for row, row_str in enumerate(lines):
-        if len(row) != num_cols:
+        if len(row_str) != num_cols:
             raise ValueError('row length should be %d but got %d' %
                              (num_cols, len(row)))
         sub_walls = []
