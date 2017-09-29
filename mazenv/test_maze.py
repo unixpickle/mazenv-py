@@ -28,6 +28,37 @@ class TestMazeSerialization(unittest.TestCase):
             self.assertEqual(parsed.end_pos, maze.end_pos)
             self.assertTrue((parsed.walls == maze.walls).all())
 
+class TestMazeSolver(unittest.TestCase):
+    """
+    Test cases for maze solving.
+    """
+    def test_solvable_2d(self):
+        """
+        Test on solvable 2-D mazes.
+        """
+        mazes = [
+            parse_2d_maze('A.www\n' + 'wxwww'),
+            parse_2d_maze('.w....\n' + 'w..wxw\n' + '.Awwww')
+        ]
+        solutions = [
+            [(0, 0), (0, 1), (1, 1)],
+            [(2, 1), (1, 1), (1, 2), (0, 2), (0, 3), (0, 4), (1, 4)]
+        ]
+        for maze, solution in zip(mazes, solutions):
+            self.assertEqual(maze.solve(), solution)
+
+    def test_unsolvable_2d(self):
+        """
+        Test on unsolvable 2-D mazes.
+        """
+        mazes = [
+            parse_2d_maze('Awwww\n' + 'wxwww'),
+            parse_2d_maze('A.www\n' + 'wwwww'),
+            parse_2d_maze('.w..w.\n' + 'w..wxw\n' + '.Awwww'),
+        ]
+        for maze in mazes:
+            self.assertEqual(maze.solve(), None)
+
 def _testing_maze_pairs():
     """
     Return tuples of (maze, str).

@@ -2,6 +2,8 @@
 APIs for using and manipulating mazes.
 """
 
+from collections import deque
+
 import numpy as np
 
 def parse_2d_maze(maze_str):
@@ -93,6 +95,34 @@ class Maze:
             return self.walls[pos]
         return True
 
+    def solve(self):
+        """
+        Compute an optimal path from the start position to
+        the end position.
+
+        Returns a list of tuples, one for each position.
+        This list includes the start and end positions.
+
+        If no solution exists, None is returned.
+        """
+        assert self.start_pos
+        if not self.end_pos:
+            return None
+        path_queue = deque([[(self.start_pos)]])
+        visited = set()
+        while path_queue:
+            path = path_queue.popleft()
+            for neighbor in self._neighboring_spaces(path[-1]):
+                if neighbor in visited:
+                    continue
+                visited.add(neighbor)
+                new_path = path.copy()
+                new_path.append(neighbor)
+                if neighbor == self.end_pos:
+                    return new_path
+                path_queue.append(new_path)
+        return None
+
     def __str__(self):
         if len(self.walls.shape) != 2:
             return str(self.walls)
@@ -112,6 +142,14 @@ class Maze:
             row_strs.append(row_str)
         return '\n'.join(row_strs)
 
+    def _neighboring_spaces(self, pos):
+        """
+        Find the spaces neighboring the given position.
+        """
+        for neighbor in _iterate_neighbors(pos):
+            if not self.is_wall(neighbor):
+                yield neighbor
+
 def _iterate_positions(shape):
     """
     Generate an iterable of all valid indices in a tensor.
@@ -122,3 +160,11 @@ def _iterate_positions(shape):
         else:
             for sub_idx in _iterate_positions(shape[1:]):
                 yield (i,) + sub_idx
+
+def _iterate_neighbors(pos):
+    """
+    Iterate through all the single-axis neighbors.
+    """
+    for axis, val in enumerate(pos):
+        for offset in [-1, 1]:
+            yield pos[:axis] + (val+offset,) + pos[axis+1:]
