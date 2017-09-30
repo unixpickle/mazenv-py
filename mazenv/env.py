@@ -39,20 +39,27 @@ class Env(gym.Env):
 
     def _reset(self):
         self.position = self.maze.start_pos
+        return self._make_observation()
 
     def _step(self, action):
         if action != ACTION_NOP:
             new_pos = list(util.iterate_neighbors(self.position))[action-1]
             if not self.maze.is_wall(new_pos):
                 self.position = new_pos
-        obs = np.zeros(self.observation_space.low.shape, dtype='uint8')
-        for position in self.maze.positions():
-            self._fill_cell(obs[position], position)
         done = (self.position == self.maze.end_pos)
         rew = -1.0
         if done:
             rew = 0.0
-        return obs, rew, done, {}
+        return self._make_observation(), rew, done, {}
+
+    def _make_observation(self):
+        """
+        Create an observation for the current state.
+        """
+        obs = np.zeros(self.observation_space.low.shape, dtype='uint8')
+        for position in self.maze.positions():
+            self._fill_cell(obs[position], position)
+        return obs
 
     def _fill_cell(self, cell, cell_position):
         """

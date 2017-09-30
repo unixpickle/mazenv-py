@@ -4,7 +4,7 @@ Tests for env.py
 
 import unittest
 
-from mazenv.env import CURRENT_CELL_FIELD, Env
+from mazenv.env import CURRENT_CELL_FIELD, Env, HorizonEnv
 from mazenv.maze import parse_2d_maze
 
 class EnvTest(unittest.TestCase):
@@ -22,6 +22,7 @@ class EnvTest(unittest.TestCase):
                              'Awx..\n' +
                              '..w..')
         env = Env(maze)
+        env.reset()
         act_nop, act_up, act_down, act_left, act_right = [0, 1, 2, 3, 4]
         actions = [act_down, act_right, act_right, act_nop, act_left,
                    act_left, act_up, act_up, act_up, act_right, act_up,
@@ -52,6 +53,46 @@ class EnvTest(unittest.TestCase):
                 self.assertEqual(cell_val, 1)
             else:
                 self.assertEqual(cell_val, 0)
+
+class HorizonEnvTest(unittest.TestCase):
+    """
+    Tests for limited-horizon environments.
+    """
+    def test_2d_observations(self):
+        """
+        Test observations on a 2-D environment.
+        """
+        maze = parse_2d_maze('w...w\n' +
+                             '..w.w\n' +
+                             'Awx..\n' +
+                             '.....')
+        env = HorizonEnv(Env(maze), horizon=1)
+        env.reset()
+        act_up, act_down, act_left, act_right = [1, 2, 3, 4]
+        actions = [act_left, act_down, act_right, act_right, act_up]
+        obses = [
+            _centered_horizon_obs('w..\nwAw\nw..'),
+            _centered_horizon_obs('wAw\nw..\nwww'),
+            _centered_horizon_obs('Awx\n...\nwww'),
+            _centered_horizon_obs('wx.\n...\nwww'),
+            _centered_horizon_obs('.w.\nwx.\n...')
+        ]
+        for action, expected_obs in zip(actions, obses):
+            obs, _, _, _ = env.step(action)
+            self.assertTrue((obs == expected_obs).all())
+
+def _centered_horizon_obs(maze_str):
+    maze = parse_2d_maze(maze_str)
+
+    center = tuple(x//2 for x in maze.shape)
+    old_start = maze.start_pos
+    maze.start_pos = center
+    env = Env(maze)
+    env.reset()
+    maze.start_pos = old_start
+
+    obs, _, _, _ = env.step(0)
+    return obs
 
 if __name__ == '__main__':
     unittest.main()
