@@ -116,7 +116,7 @@ class Maze:
         visited = set()
         while path_queue:
             path = path_queue.popleft()
-            for neighbor in self._neighboring_spaces(path[-1]):
+            for neighbor in self.neighboring_non_walls(path[-1]):
                 if neighbor in visited:
                     continue
                 visited.add(neighbor)
@@ -126,6 +126,25 @@ class Maze:
                     return new_path
                 path_queue.append(new_path)
         return None
+
+    def neighboring_non_walls(self, pos):
+        """
+        Find the non-walls neighboring the given position.
+        """
+        for neighbor in util.iterate_neighbors(pos):
+            if not self.is_wall(neighbor):
+                yield neighbor
+
+    def spaces(self):
+        """
+        Iterate through all the spaces with no start or
+        end positions.
+        """
+        for pos in self.positions():
+            if not (self.is_wall(pos) or
+                    pos == self.start_pos or
+                    pos == self.end_pos):
+                yield pos
 
     def __str__(self):
         if len(self.walls.shape) != 2:
@@ -146,10 +165,8 @@ class Maze:
             row_strs.append(row_str)
         return '\n'.join(row_strs)
 
-    def _neighboring_spaces(self, pos):
-        """
-        Find the spaces neighboring the given position.
-        """
-        for neighbor in util.iterate_neighbors(pos):
-            if not self.is_wall(neighbor):
-                yield neighbor
+    def __eq__(self, other):
+        return (self.start_pos == other.start_pos and
+                self.end_pos == other.end_pos and
+                self.shape == other.shape and
+                (self.walls == other.walls).all())
