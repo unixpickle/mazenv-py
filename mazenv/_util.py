@@ -2,17 +2,13 @@
 Utilities for grids.
 """
 
+import itertools
+
 def iterate_positions(shape):
     """
     Generate an iterable of all valid indices in a tensor.
     """
-    # TODO: use itertools.product() here.
-    for i in range(shape[0]):
-        if len(shape) == 1:
-            yield (i,)
-        else:
-            for sub_idx in iterate_positions(shape[1:]):
-                yield (i,) + sub_idx
+    return itertools.product(*[range(n) for n in shape])
 
 def iterate_neighbors(pos):
     """
