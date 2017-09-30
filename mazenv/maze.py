@@ -67,6 +67,13 @@ class Maze:
         self.start_pos = start_pos
         self.end_pos = end_pos
 
+    @property
+    def shape(self):
+        """
+        Get the shape of the maze as a tuple.
+        """
+        return self.walls.shape
+
     def in_bounds(self, pos):
         """
         Check that a coordinate tuple is in bounds.
@@ -146,7 +153,7 @@ class Maze:
         """
         Find the spaces neighboring the given position.
         """
-        for neighbor in _iterate_neighbors(pos):
+        for neighbor in iterate_neighbors(pos):
             if not self.is_wall(neighbor):
                 yield neighbor
 
@@ -161,9 +168,12 @@ def _iterate_positions(shape):
             for sub_idx in _iterate_positions(shape[1:]):
                 yield (i,) + sub_idx
 
-def _iterate_neighbors(pos):
+def iterate_neighbors(pos):
     """
-    Iterate through all the single-axis neighbors.
+    Iterate through all the single-axis neighbors of a
+    coordinate tuple.
+
+    Order is deterministic.
     """
     for axis, val in enumerate(pos):
         for offset in [-1, 1]:
