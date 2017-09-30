@@ -9,6 +9,11 @@ import numpy as np
 from .maze import iterate_neighbors
 
 NUM_CELL_FIELDS = 5
+SPACE_CELL_FIELD = 0
+WALL_CELL_FIELD = 1
+START_CELL_FIELD = 2
+END_CELL_FIELD = 3
+CURRENT_CELL_FIELD = 4
 ACTION_NOP = 0
 
 class Env(gym.Env):
@@ -38,20 +43,20 @@ class Env(gym.Env):
             new_pos = list(iterate_neighbors(self.position))[action-1]
             if not self.maze.is_wall(new_pos):
                 self.position = new_pos
-        obs = np.array(self.observation_space.low.shape, dtype='uint8')
+        obs = np.zeros(self.observation_space.low.shape, dtype='uint8')
         for position in self.maze.positions():
             if self.maze.is_wall(position):
-                obs[position][1] = 1
+                obs[position][WALL_CELL_FIELD] = 1
             elif position == self.maze.start_pos:
-                obs[position][2] = 1
+                obs[position][START_CELL_FIELD] = 1
             elif position == self.maze.end_pos:
-                obs[position][3] = 1
+                obs[position][END_CELL_FIELD] = 1
             else:
-                obs[position][0] = 1
+                obs[position][SPACE_CELL_FIELD] = 1
             if position == self.position:
-                obs[position][4] = 1
-        done = (self.position == self.maze.env_pos)
-        rew = -1
+                obs[position][CURRENT_CELL_FIELD] = 1
+        done = (self.position == self.maze.end_pos)
+        rew = -1.0
         if done:
-            rew = 0
+            rew = 0.0
         return obs, rew, done, {}

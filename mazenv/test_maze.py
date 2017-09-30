@@ -5,7 +5,7 @@ Tests for maze.py
 import unittest
 import numpy as np
 
-from .maze import Maze, parse_2d_maze
+from mazenv.maze import Maze, parse_2d_maze
 
 class TestMazeSerialization(unittest.TestCase):
     """
@@ -74,3 +74,6 @@ def _testing_maze_pairs():
                 end_pos=(2, 0))
     res.append((maze, '.w\nw.\nxw'))
     return res
+
+if __name__ == '__main__':
+    unittest.main()
