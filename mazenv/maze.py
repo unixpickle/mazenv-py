@@ -6,6 +6,8 @@ from collections import deque
 
 import numpy as np
 
+from . import _util as util
+
 def parse_2d_maze(maze_str):
     """
     Decode a 2-D maze from its string representation.
@@ -78,19 +80,14 @@ class Maze:
         """
         Check that a coordinate tuple is in bounds.
         """
-        shape = self.walls.shape
-        assert len(shape) == len(pos)
-        for val, max_val in zip(pos, shape):
-            if val < 0 or val >= max_val:
-                return False
-        return True
+        return util.shape_contains(self.shape, pos)
 
     def positions(self):
         """
         Return an iterable of all the valid positions on
         the maze, in a deterministic order.
         """
-        return _iterate_positions(self.walls.shape)
+        return util.iterate_positions(self.shape)
 
     def is_wall(self, pos):
         """
@@ -153,28 +150,6 @@ class Maze:
         """
         Find the spaces neighboring the given position.
         """
-        for neighbor in iterate_neighbors(pos):
+        for neighbor in util.iterate_neighbors(pos):
             if not self.is_wall(neighbor):
                 yield neighbor
-
-def _iterate_positions(shape):
-    """
-    Generate an iterable of all valid indices in a tensor.
-    """
-    for i in range(shape[0]):
-        if len(shape) == 1:
-            yield (i,)
-        else:
-            for sub_idx in _iterate_positions(shape[1:]):
-                yield (i,) + sub_idx
-
-def iterate_neighbors(pos):
-    """
-    Iterate through all the single-axis neighbors of a
-    coordinate tuple.
-
-    Order is deterministic.
-    """
-    for axis, val in enumerate(pos):
-        for offset in [-1, 1]:
-            yield pos[:axis] + (val+offset,) + pos[axis+1:]
