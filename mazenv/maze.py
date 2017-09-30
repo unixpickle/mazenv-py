@@ -8,39 +8,6 @@ import numpy as np
 
 from . import _util as util
 
-def parse_2d_maze(maze_str):
-    """
-    Decode a 2-D maze from its string representation.
-    """
-    lines = [x.strip() for x in maze_str.strip().split('\n')]
-    num_rows = len(lines)
-    if num_rows == 0:
-        raise ValueError('must have at least one row')
-    num_cols = len(lines[0])
-    walls = []
-    start_pos = None
-    end_pos = None
-    for row, row_str in enumerate(lines):
-        if len(row_str) != num_cols:
-            raise ValueError('row length should be %d but got %d' %
-                             (num_cols, len(row)))
-        sub_walls = []
-        for col, cell_str in enumerate(row_str):
-            if cell_str == 'w':
-                sub_walls.append(True)
-            else:
-                sub_walls.append(False)
-            if cell_str == 'A':
-                if start_pos:
-                    raise ValueError('more than one start state')
-                start_pos = (row, col)
-            elif cell_str == 'x':
-                if end_pos:
-                    raise ValueError('more than one end state')
-                end_pos = (row, col)
-        walls.append(sub_walls)
-    return Maze(np.array(walls), start_pos=start_pos, end_pos=end_pos)
-
 class Maze:
     """
     A rectangular maze.
@@ -170,3 +137,36 @@ class Maze:
                 self.end_pos == other.end_pos and
                 self.shape == other.shape and
                 (self.walls == other.walls).all())
+
+def parse_2d_maze(maze_str):
+    """
+    Decode a 2-D maze from its string representation.
+    """
+    lines = [x.strip() for x in maze_str.strip().split('\n')]
+    num_rows = len(lines)
+    if num_rows == 0:
+        raise ValueError('must have at least one row')
+    num_cols = len(lines[0])
+    walls = []
+    start_pos = None
+    end_pos = None
+    for row, row_str in enumerate(lines):
+        if len(row_str) != num_cols:
+            raise ValueError('row length should be %d but got %d' %
+                             (num_cols, len(row)))
+        sub_walls = []
+        for col, cell_str in enumerate(row_str):
+            if cell_str == 'w':
+                sub_walls.append(True)
+            else:
+                sub_walls.append(False)
+            if cell_str == 'A':
+                if start_pos:
+                    raise ValueError('more than one start state')
+                start_pos = (row, col)
+            elif cell_str == 'x':
+                if end_pos:
+                    raise ValueError('more than one end state')
+                end_pos = (row, col)
+        walls.append(sub_walls)
+    return Maze(np.array(walls), start_pos=start_pos, end_pos=end_pos)
