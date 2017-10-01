@@ -30,5 +30,5 @@ env = mazenv.Env(maze)
 If you want to restrict the observations to a 5x5 grid centered around the current position, you can do:
 
 ```
-restricted_env = mazenv.HorizonEnv(env, horizon=2)
+restricted_env = mazenv.HorizonLimit(env, horizon=2)
 ```

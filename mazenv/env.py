@@ -76,7 +76,7 @@ class Env(gym.Env):
         if cell_position == self.position:
             cell[CURRENT_CELL_FIELD] = 1
 
-class HorizonEnv(gym.ObservationWrapper):
+class HorizonLimit(gym.ObservationWrapper):
     """
     Wrap the observations of an Env so that they extend a
     fixed distance in every direction.
@@ -86,7 +86,7 @@ class HorizonEnv(gym.ObservationWrapper):
     For a horizon of 1, observations have side length 3.
     """
     def __init__(self, env, horizon=1):
-        super(HorizonEnv, self).__init__(env)
+        super(HorizonLimit, self).__init__(env)
         self.horizon = horizon
         self.old_shape = env.observation_space.low.shape[:-1]
         num_dims = len(self.old_shape)

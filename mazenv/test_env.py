@@ -4,7 +4,7 @@ Tests for env.py
 
 import unittest
 
-from mazenv.env import CURRENT_CELL_FIELD, Env, HorizonEnv
+from mazenv.env import CURRENT_CELL_FIELD, Env, HorizonLimit
 from mazenv.maze import parse_2d_maze
 
 class EnvTest(unittest.TestCase):
@@ -54,7 +54,7 @@ class EnvTest(unittest.TestCase):
             else:
                 self.assertEqual(cell_val, 0)
 
-class HorizonEnvTest(unittest.TestCase):
+class HorizonLimitTest(unittest.TestCase):
     """
     Tests for limited-horizon environments.
     """
@@ -66,7 +66,7 @@ class HorizonEnvTest(unittest.TestCase):
                              '..w.w\n' +
                              'Awx..\n' +
                              '.....')
-        env = HorizonEnv(Env(maze), horizon=1)
+        env = HorizonLimit(Env(maze), horizon=1)
         env.reset()
         act_up, act_down, act_left, act_right = [1, 2, 3, 4]
         actions = [act_left, act_down, act_right, act_right, act_up]
