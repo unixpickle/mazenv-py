@@ -76,36 +76,24 @@ class Env(gym.Env):
         if cell_position == self.position:
             cell[CURRENT_CELL_FIELD] = 1
 
-class HorizonLimit(gym.ObservationWrapper):
+class HorizonEnv(Env):
     """
-    Wrap the observations of an Env so that they extend a
-    fixed distance in every direction.
+    A maze environment that restricts observations to a
+    fixed horizon from the current position.
 
     The number of cells away you can see along an axis is
     called the "horizon".
     For a horizon of 1, observations have side length 3.
     """
-    def __init__(self, env, horizon=1):
-        super(HorizonLimit, self).__init__(env)
+    def __init__(self, maze, horizon=1):
+        super(HorizonEnv, self).__init__(maze)
         self.horizon = horizon
-        self.old_shape = env.observation_space.low.shape[:-1]
+        self.old_shape = self.observation_space.low.shape[:-1]
         num_dims = len(self.old_shape)
         obs_size = (horizon*2 + 1,) * num_dims + (NUM_CELL_FIELDS,)
         self.observation_space = spaces.Box(0, 1, shape=obs_size)
 
-    def _observation(self, observation):
-        wall = [0] * NUM_CELL_FIELDS
-        wall[WALL_CELL_FIELD] = 1
-        center = _obs_current_position(observation)
-        res = []
-        for position in self._position_indices(center):
-            if util.shape_contains(self.old_shape, position):
-                res.append(observation[position])
-            else:
-                res.append(wall)
-        return np.array(res).reshape(self.observation_space.low.shape)
-
-    def _position_indices(self, center_pos):
+    def _make_observation(self):
         """
         Compute the indices of each cell in the visible
         horizon grid.
@@ -113,12 +101,10 @@ class HorizonLimit(gym.ObservationWrapper):
         The cells are generated in order such that they
         can be reshaped to the N-d observation.
         """
-        ranges = [list(range(x-self.horizon, x+self.horizon+1)) for x in center_pos]
-        return itertools.product(*ranges)
-
-def _obs_current_position(observation):
-    """
-    Extract the current position from an observation.
-    """
-    where = np.where(observation[..., CURRENT_CELL_FIELD] == 1)
-    return tuple(x[0] for x in where)
+        pos = self.position
+        ranges = [list(range(x-self.horizon, x+self.horizon+1)) for x in pos]
+        grid = np.zeros(self.observation_space.low.shape, dtype='uint8')
+        flat_grid = grid.reshape((-1, NUM_CELL_FIELDS))
+        for idx, position in enumerate(itertools.product(*ranges)):
+            self._fill_cell(flat_grid[idx], position)
+        return grid
