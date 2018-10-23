@@ -89,7 +89,7 @@ class HorizonEnvTest(unittest.TestCase):
 def _centered_horizon_obs(maze_str):
     maze = parse_2d_maze(maze_str)
 
-    center = tuple(x//2 for x in maze.shape)
+    center = tuple(x // 2 for x in maze.shape)
     old_start = maze.start_pos
     maze.start_pos = center
     env = Env(maze)

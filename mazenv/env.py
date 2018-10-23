@@ -36,7 +36,7 @@ class Env(gym.Env):
         obs_shape = maze.shape + (NUM_CELL_FIELDS,)
         self.maze = maze
         self.observation_space = spaces.Box(0, 1, shape=obs_shape, dtype='uint8')
-        self.action_space = spaces.Discrete(len(maze.shape)*2 + 1)
+        self.action_space = spaces.Discrete(len(maze.shape) * 2 + 1)
         self.position = maze.start_pos
 
     def reset(self):
@@ -94,7 +94,7 @@ class HorizonEnv(Env):
         self.horizon = horizon
         self.old_shape = self.observation_space.low.shape[:-1]
         num_dims = len(self.old_shape)
-        obs_size = (horizon*2 + 1,) * num_dims + (NUM_CELL_FIELDS,)
+        obs_size = (horizon * 2 + 1,) * num_dims + (NUM_CELL_FIELDS,)
         self.observation_space = spaces.Box(0, 1, shape=obs_size)
 
     def _make_observation(self):
@@ -106,7 +106,7 @@ class HorizonEnv(Env):
         can be reshaped to the N-d observation.
         """
         pos = self.position
-        ranges = [list(range(x-self.horizon, x+self.horizon+1)) for x in pos]
+        ranges = [list(range(x - self.horizon, x + self.horizon + 1)) for x in pos]
         grid = np.zeros(self.observation_space.low.shape, dtype='uint8')
         flat_grid = grid.reshape((-1, NUM_CELL_FIELDS))
         for idx, position in enumerate(itertools.product(*ranges)):
