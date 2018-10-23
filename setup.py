@@ -10,7 +10,7 @@ with codecs.open(path.join(HERE, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='mazenv',
-    version='0.4.0',
+    version='0.4.1',
     description='Maze environments for Reinforcement Learning',
     long_description=LONG_DESCRIPTION,
     url='https://github.com/unixpickle/mazenv-py',

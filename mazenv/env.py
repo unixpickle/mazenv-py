@@ -31,10 +31,11 @@ class Env(gym.Env):
     This covers every dimension and a NOP.
     """
 
-    def __init__(self, maze):
+    def __init__(self, maze, sparse_rew=False):
         assert maze.start_pos
         obs_shape = maze.shape + (NUM_CELL_FIELDS,)
         self.maze = maze
+        self.sparse_rew = sparse_rew
         self.observation_space = spaces.Box(0, 1, shape=obs_shape, dtype='uint8')
         self.action_space = spaces.Discrete(len(maze.shape) * 2 + 1)
         self.position = maze.start_pos
@@ -49,10 +50,7 @@ class Env(gym.Env):
             if not self.maze.is_wall(new_pos):
                 self.position = new_pos
         done = (self.position == self.maze.end_pos)
-        rew = -1.0
-        if done:
-            rew = 0.0
-        return self._make_observation(), rew, done, {}
+        return self._make_observation(), self._make_reward(done), done, {}
 
     def _make_observation(self):
         """
@@ -62,6 +60,13 @@ class Env(gym.Env):
         for position in self.maze.positions():
             self._fill_cell(obs[position], position)
         return obs
+
+    def _make_reward(self, solved):
+        if self.sparse_rew:
+            return float(solved)
+        if solved:
+            return 0.0
+        return -1.0
 
     def _fill_cell(self, cell, cell_position):
         """
@@ -89,8 +94,8 @@ class HorizonEnv(Env):
     For a horizon of 1, observations have side length 3.
     """
 
-    def __init__(self, maze, horizon=1):
-        super(HorizonEnv, self).__init__(maze)
+    def __init__(self, maze, sparse_rew=False, horizon=1):
+        super(HorizonEnv, self).__init__(maze, sparse_rew=sparse_rew)
         self.horizon = horizon
         self.old_shape = self.observation_space.low.shape[:-1]
         num_dims = len(self.old_shape)
