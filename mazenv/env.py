@@ -100,7 +100,7 @@ class HorizonEnv(Env):
         self.old_shape = self.observation_space.low.shape[:-1]
         num_dims = len(self.old_shape)
         obs_size = (horizon * 2 + 1,) * num_dims + (NUM_CELL_FIELDS,)
-        self.observation_space = spaces.Box(0, 1, shape=obs_size)
+        self.observation_space = spaces.Box(0, 1, shape=obs_size, dtype='uint8')
 
     def _make_observation(self):
         """
