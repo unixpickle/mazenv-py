@@ -28,6 +28,6 @@ setup(
     packages=find_packages(exclude=['examples']),
     install_requires=[
         'numpy>=1.0.0,<2.0.0',
-        'gym>=0.9.2,<0.10.0',
+        'gym>=0.10.0,<0.11.0',
     ],
 )

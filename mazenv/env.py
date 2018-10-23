@@ -35,15 +35,15 @@ class Env(gym.Env):
         assert maze.start_pos
         obs_shape = maze.shape + (NUM_CELL_FIELDS,)
         self.maze = maze
-        self.observation_space = spaces.Box(0, 1, shape=obs_shape)
+        self.observation_space = spaces.Box(0, 1, shape=obs_shape, dtype='uint8')
         self.action_space = spaces.Discrete(len(maze.shape)*2 + 1)
         self.position = maze.start_pos
 
-    def _reset(self):
+    def reset(self):
         self.position = self.maze.start_pos
         return self._make_observation()
 
-    def _step(self, action):
+    def step(self, action):
         if action != ACTION_NOP:
             new_pos = list(util.iterate_neighbors(self.position))[action-1]
             if not self.maze.is_wall(new_pos):
