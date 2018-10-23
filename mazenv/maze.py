@@ -8,6 +8,7 @@ import numpy as np
 
 from . import _util as util
 
+
 class Maze:
     """
     A rectangular maze.
@@ -17,6 +18,7 @@ class Maze:
     Two spaces, as designated by the start_pos and end_pos
     attributes, represent the start and end cells.
     """
+
     def __init__(self, wall_array, start_pos=None, end_pos=None):
         """
         Create a maze from the given specifications.
@@ -137,6 +139,7 @@ class Maze:
                 self.end_pos == other.end_pos and
                 self.shape == other.shape and
                 (self.walls == other.walls).all())
+
 
 def parse_2d_maze(maze_str):
     """

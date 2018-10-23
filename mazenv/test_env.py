@@ -7,11 +7,13 @@ import unittest
 from mazenv.env import CURRENT_CELL_FIELD, Env, HorizonEnv
 from mazenv.maze import parse_2d_maze
 
+
 class EnvTest(unittest.TestCase):
     """
     Tests for raw environments.
     """
     # pylint: disable=R0914
+
     def test_2d_trajectory(self):
         """
         Test that all the positions, rewards, and done
@@ -54,10 +56,12 @@ class EnvTest(unittest.TestCase):
             else:
                 self.assertEqual(cell_val, 0)
 
+
 class HorizonEnvTest(unittest.TestCase):
     """
     Tests for limited-horizon environments.
     """
+
     def test_2d_observations(self):
         """
         Test observations on a 2-D environment.
@@ -81,6 +85,7 @@ class HorizonEnvTest(unittest.TestCase):
             obs, _, _, _ = env.step(action)
             self.assertTrue((obs == expected_obs).all())
 
+
 def _centered_horizon_obs(maze_str):
     maze = parse_2d_maze(maze_str)
 
@@ -93,6 +98,7 @@ def _centered_horizon_obs(maze_str):
 
     obs, _, _, _ = env.step(0)
     return obs
+
 
 if __name__ == '__main__':
     unittest.main()

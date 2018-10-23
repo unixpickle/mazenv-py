@@ -9,6 +9,7 @@ import numpy as np
 from .maze import Maze
 from . import _util as util
 
+
 def prim(shape):
     """
     Use randomized Prim's algorithm to generate a maze.

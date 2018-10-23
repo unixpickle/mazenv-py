@@ -7,10 +7,12 @@ import numpy as np
 
 from mazenv.maze import Maze, parse_2d_maze
 
+
 class TestMazeSerialization(unittest.TestCase):
     """
     Test cases for conversions between mazes and strings.
     """
+
     def test_str_2d(self):
         """
         Test 2-D maze serialization.
@@ -28,10 +30,12 @@ class TestMazeSerialization(unittest.TestCase):
             self.assertEqual(parsed.end_pos, maze.end_pos)
             self.assertTrue((parsed.walls == maze.walls).all())
 
+
 class TestMazeSolver(unittest.TestCase):
     """
     Test cases for maze solving.
     """
+
     def test_solvable_2d(self):
         """
         Test on solvable 2-D mazes.
@@ -59,6 +63,7 @@ class TestMazeSolver(unittest.TestCase):
         for maze in mazes:
             self.assertEqual(maze.solve(), None)
 
+
 def _testing_maze_pairs():
     """
     Return tuples of (maze, str).
@@ -74,6 +79,7 @@ def _testing_maze_pairs():
                 end_pos=(2, 0))
     res.append((maze, '.w\nw.\nxw'))
     return res
+
 
 if __name__ == '__main__':
     unittest.main()

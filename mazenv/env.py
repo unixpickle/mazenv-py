@@ -18,6 +18,7 @@ END_CELL_FIELD = 3
 CURRENT_CELL_FIELD = 4
 ACTION_NOP = 0
 
+
 class Env(gym.Env):
     """
     Base class for maze environments.
@@ -29,6 +30,7 @@ class Env(gym.Env):
     Actions are discrete with 2*num_dims + 1 options.
     This covers every dimension and a NOP.
     """
+
     def __init__(self, maze):
         assert maze.start_pos
         obs_shape = maze.shape + (NUM_CELL_FIELDS,)
@@ -76,6 +78,7 @@ class Env(gym.Env):
         if cell_position == self.position:
             cell[CURRENT_CELL_FIELD] = 1
 
+
 class HorizonEnv(Env):
     """
     A maze environment that restricts observations to a
@@ -85,6 +88,7 @@ class HorizonEnv(Env):
     called the "horizon".
     For a horizon of 1, observations have side length 3.
     """
+
     def __init__(self, maze, horizon=1):
         super(HorizonEnv, self).__init__(maze)
         self.horizon = horizon

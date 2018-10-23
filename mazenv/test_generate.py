@@ -6,11 +6,13 @@ import unittest
 
 from mazenv.generate import prim
 
+
 class GeneratorTest(unittest.TestCase):
     """
     Tests for maze generators.
     """
     # pylint: disable=R0914
+
     def test_prim(self):
         """
         Test the prim generator.
@@ -32,6 +34,7 @@ class GeneratorTest(unittest.TestCase):
                 self.assertTrue(maze.solve())
                 self.assertTrue(maze not in seen)
                 seen.append(maze)
+
 
 if __name__ == '__main__':
     unittest.main()

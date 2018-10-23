@@ -4,11 +4,13 @@ Utilities for grids.
 
 import itertools
 
+
 def iterate_positions(shape):
     """
     Generate an iterable of all valid indices in a tensor.
     """
     return itertools.product(*[range(n) for n in shape])
+
 
 def iterate_neighbors(pos):
     """
@@ -20,6 +22,7 @@ def iterate_neighbors(pos):
     for axis, val in enumerate(pos):
         for offset in [-1, 1]:
             yield pos[:axis] + (val+offset,) + pos[axis+1:]
+
 
 def shape_contains(shape, pos):
     """
